@@ -1,0 +1,874 @@
+______________________________________________________________________________________RELATIONAL DATABASE MANAGEMENT SYSTEMS
+--------------------------------------------------------------What is PostgreSQL?
+A free, open source relational database management system.
+Postgres has powerful features and acts as a primary database for many web and mobile applications.
+The Postgres server runs as a service on most operating systems, and can be used from the command line, 
+           through graphical clients, or directly from your own applications.
+
+Postgres is an open-source relational database management system that uses the SQL language,
+
+you can choose between
+relational and non-relational databases.
+However, going a bit deeper into relational databases, Postgres is an object-relational
+         database, whereas MySQL is purely a standard relational database.
+This means that Postgres includes features such as table inheritance, and function overloading,
+         which can be important for certain applications, but isn't necessary for all.
+Another main difference between Postgres and MySQL, is that Postgres adheres more closely
+         to SQL standards, especially when it comes to case-sensitivity.
+MySQL queries are not case-sensitive, meaning you do not need to capitalize strings as they
+         appear in the database.
+
+The learning outcomes for the following lessons will include:
+-Learning how to use Postgres in its native form through the command-line interface.
+-Using helpful Python adapters to perform those same queries.
+-And finally, how to execute our queries programmatically from within our Python files.
+
+--------------------------------------------------------------Installing the Chinook database
+A series of SQL commands in a text file.
+Allows us to script database operations, such as creating, populating, and updating databases.
+Put database commands in a .sql file, and run them using the Postgres command line interface.
+
+In the previous lesson, we learned about PostgreSQL and how it's important for maintaining databases.
+Now, we will begin learning how to use Postgres through a number of different means, and demonstrate
+a few examples of using Postgres with some common Python adapters.
+This video assumes that you will be using our recommended development environment, which
+comes with the Postgres server pre-installed for you.
+If not, you should have already installed the Postgres server, and have it running locally on your system.
+Instead of building a database from scratch for these next few videos, we are going to
+use a sample database that already exists, called "Chinook".
+The Chinook database was designed as a sample SQL database, which works with most of the
+common relational databases, including Postgres.
+We don't need to download the entire repository, since we're currently only interested in using the Postgres sample.
+You can find a link to this repository underneath the video, in order to follow along with me.
+Once you have the raw GitHub URL copied, within our Terminal, we're going to use the "wget"
+command to download that file.
+wget and then paste the URL.
+As you can see in the File Explorer, we now have the Chinook PostgreSQL file on our workspace.
+Next, we need to start the Postgres command-line interface, or shell, in order to get the Chinook
+database installed, and the data populated.
+To launch the Postgres CLI, we can simply type "psql" and hit enter.
+To view, or list, any databases in our environment, we can type \l.
+By default, the Postgres CLI comes with 3 databases out of the box; 'postgres', 'template0', and 'template1'.
+Instead of using any of these default databases, let's create a new database for our Chinook lessons.
+CREATE DATABASE chinook; Don't forget the semicolon at the end of the command,
+which is the standard way to separate each SQL statement, since you can theoretically
+combine multiple commands in a single entry.
+If you've hit enter without adding the semicolon, it will assume you're wanting to add additional
+commands, so just add your semicolon now, and hit enter.
+We now have a fourth database, called Chinook, which is currently empty.
+If we needed to switch between databases, we can simply type \c followed by the name
+of the database we want to switch over to.
+\c postgres - now we're on the default postgres database.
+\c chinook - and now we're connected to our new database.
+The \c stands for 'connect' in case you're wondering, telling it which database to connect to.
+Finally, while we're connected to our new chinook database, we need to initialize or
+install the downloaded sample Chinook PostgreSQL database.
+\i Chinook_PostgreSql.sql The \i generally means include, integrate, install, or initialize.
+Essentially, this file is an SQL script that contains all of the instructions needed to
+create tables, and populate our database with information so that we have useful data for practice.
+We don't need to fully understand what it's doing right now; it's just so you know that
+it's giving us data to work with and test.
+We would encourage you later to go back and read through the script a bit, and have a
+look at some of the commands involved.
+This will take about 5 minutes to build our database tables, so feel free to grab yourself
+a fresh cup of tea, or stand up and stretch a bit away from the keyboard.
+In the next lesson, we'll check to ensure that our data was populated correctly, and
+see how to query the database using some basic commands.
+
+--------------------------------------------------------------PostgreSQL from the command line
+The Postgres server running on a command line terminal
+Provides access to Postgres via the command line in an IDE.
+Use the command line to run scripts; create, query, and update databases.
+
+In the last video, we learned how to start the Postgres server from the command line.
+We were also in the process of installing the Chinook database onto our workspace.
+Now, we need to check that everything initialized properly, making sure that we have all tables created for Chinook.
+In this video, we are also going to look at how to perform some basic query searches using our new data.
+Once everything has finished, you should see the database name of chinook, waiting for
+the next command to be entered.
+However, in case your workspace has timed-out, or you stopped the lessons in the meantime,
+let's quickly check from the beginning.
+I'll type \q to exit, or quit, the Postgres CLI, taking us out of the server and back
+to the normal workspace terminal.
+If you recall from the last video, we created a fourth database on our Postgres server.
+When we start the Postgres shell, we can actually include a flag to specify which database we'd
+like to connect to once Postgres is loaded.
+'psql -d chinook' . This will start the server, and tell it that
+the database we want to connect to is the one called "chinook", as declared by using
+the -d flag to specify a database name.
+That's excellent, we're now connected to our chinook database on the Postgres server.
+Next, we need to confirm that all tables and data were successfully added to the database.
+'\dt' . This will allow us to display tables on our database.
+As you can see, there are a series of tables that have been created for us; from Album,
+all the way down to the Track table, giving us a total of 11 tables.
+For now, we're only going to demonstrate a few examples of how to query the data using basic SQL commands.
+We don't need to focus too much on this method, because in the later lessons, I'm going to
+show you more programmatic ways of achieving the same results.
+First, let's start by retrieving all data from the Artist table.
+Technically you don't need to write the SQL commands in capital letters, but it's standard
+practice to distinguish between the different pieces of your query string.
+The asterisk is a common programming method to signify a wildcard, which essentially means
+to select anything and everything.
+Also note, I've used double-quotes intentionally, because using single-quotes will throw a 'syntax error',
+which I'll explain a bit more in detail shortly.
+Finally, the command must end with a semicolon, to specify that this is the end of our query.
+If you omit the semicolon and hit enter, nothing happens, but in reality, it's waiting for
+you to finish building your query, which can span multiple lines.
+Just add the missing semicolon and hit enter, and your query should still work fine.
+That's working perfectly now, and we are presented with two columns on this Artist table.
+ArtistId, which acts as our primary key for each individual row on the table, and Name,
+which is the name of the artists on the table.
+You can scroll up and down to see more rows, and once we get to the bottom, it's telling
+us that there are a total of 244 rows.
+Don't worry about the ArtistId and total number of rows matching up, as the creator of the
+Chinook database has removed some, if you notice there isn't a 262, 264, 267, and so on.
+In order to exit this query search, simply type the letter "q" and hit enter, but not
+to be confused with \q which will quit the Postgres CLI.
+Next, let's query the same table, but this time, only retrieve the "Name" column.
+Again, I'm specifically using double-quotes, and an ending semicolon.
+As you can see, we get the same data, but this time only from the column with a title of "Name".
+Typing "q" will return us back to the command prompts.
+For the next query, I will search the same table, but this time I am going to specify
+a particular artist name using the WHERE clause.
+As you may have noticed, I've used double-quotes again, except when it comes to the specific
+value I'd like to search for, which must be in single-quotes.
+This is to distinguish between the various table and column names, versus the specific
+context or value I need to find.
+Perfect, you can see that we only get one result listed for Queen, including the Name
+and ArtistId column headers.
+I'll perform the same exact query, but this time we'll specify the ArtistId of 51 instead of the artist name.
+Since 51 is a primary key and integer, we don't need the single-quotes, but it will
+still work if you include them.
+Next, we'll perform the same exact query one more time, but instead of looking within the
+Artist table, we're going to look at the Album table.
+This time, it has a list of any album on the database whose ArtistId is 51, which we already
+know is the primary key for Queen.
+This link or connection, referencing the primary key from another table, is known as a foreign key,
+and demonstrates that these tables are related, hence the name, relational database.
+From the sample Chinook database, it seems they've only included three of Queen's albums,
+each represented by their own primary key under AlbumID.
+For our final sample query, I'm going to look within the table called "Track", and use the
+column header of "Composer" to search for all tracks by Queen.
+You can see that only 9 tracks are listed, all of which belong to the "Greatest Hits 2" album,
+as specified by the foreign key of 36 under AlbumId, that we saw from the last query.
+The other columns here contain additional data about those tracks, some of which have
+foreign keys related to different tables on our database.
+In a real-world scenario, you should probably consider making the Composer column actually
+be the ArtistId foreign key, to keep with the relational database schema.
+Understanding the database tables, columns, and rows might be a bit confusing to comprehend
+at first, and that's quite normal, so don't panic.
+Some people, myself included, are more of a visual learner, so what I'm going to do
+is use that same command once again, but this time I'll copy the results into sample CSV and JSON files.
+You don't need to understand these commands, they're simply to demonstrate our database
+content into a format you might be more familiar with.
+When I open each of these new files, you can see that we have a standard CSV file with
+our results, as well as a standard JSON file with the same results.
+I've taken the liberty of pasting the CSV data into a generic spreadsheet program, such
+as Microsoft Excel, LibreOffice Calc, or Google Sheets.
+As you can see, it's the same data, just presented in a more familiar everyday method, with the
+spreadsheet columns and rows.
+The same can be said with our JSON file, and once I've applied some quick formatting, our
+data is now presented in a standard JSON layout.
+Taking those into consideration, ultimately we could do the same thing reversed, if we
+have existing CSV or JSON files, we could perform a data dump and have it create our database for us.
+This is exactly what we did in the last video, but from a SQL file, however, the concept is the same.
+In this video we've learned how to verify that our database was created successfully,
+and verified its contents.
+We also learned how to perform a few basic query searches on the database tables, and
+how they all mostly relate to one another with the use of primary and foreign keys.
+Just to reiterate, these are very rudimentary SQL commands, and you don't need to focus
+too much attention to the structure and language.
+It's important to demonstrate some SQL basics, in case you encounter it at any stage during
+your career as a developer.
+We will soon learn how to replicate these same queries programmatically, but first we
+need to connect Postgres to Python, which will be covered in the next video.
+
+
+
+_____________________________________________________________________________________________POSTGRESQL AND Python
+--------------------------------------------------------Installing the libraries and setting up
+
+A Python package and data adapter called psycopg2.
+Run Postgres commands from Python code, instead of the CLI.
+Use the psycopg2 library and it's inbuilt methods.
+
+In the previous video, we learned how to perform basic SQL commands on our Chinook database
+within the Postgres CLI.
+This allowed us to query our data using raw commands, but isn't necessarily the most convenient
+method when working with databases.
+In this video, we are going to start using Python to execute the same exact queries from
+the last lesson, but with the addition of a database adapter called PsycoPG2.
+PsycoPG2 is by far the most popular, and stable library for connecting Python to Postgres.
+It's used by pretty much most Python and Postgres frameworks globally, including Django, which
+you'll learn more about later on the course.
+Not only does it support Python's primary versions, but it's also actively maintained
+and widely used in the development world when working with back-end databases.
+Before we can start using this adapter, we need to install it into our workspace.
+pip3 install psycopg2
+Once that's installed, we're going to use its built-in API to access our Chinook database,
+and we'll do that by using a Python file, not the CLI this time.
+Let's create a new Python file using the "touch" command, and call it 'sql-psycopg2.py', then
+open it up for editing.
+It's important to note that you shouldn't call your file psycopg2.py, as this is a default
+file already used by the package, and will cause your queries to always fail.
+This is due to the fact that Python will confuse your custom file by the same name, as the
+file from the package, and attempt to execute the wrong one.
+The very first thing that we need to do now, is to 'import psycopg2' at the top of our file.
+Then, we need to have psycopg2 connect to our Postgres database called Chinook, using
+the .connect() method, and we'll assign that to a variable of 'connection'.
+We are only specifying the name of our database, "chinook", in double-quotes, but you could
+include additional connection values such as host, username, password, and so on.
+Since we are already working locally, and haven't set up any credentials, the only thing
+that we need to worry about is the actual database name.
+Next, our connection needs an instance of a Cursor Object.
+A cursor object is another way of saying a 'set' or 'list', similar to an 'array' in JavaScript.
+Essentially, anything that we query from the database will become part of this cursor object,
+and to read that data, we should iterate over the cursor using a for-loop, as an example.
+Before we start to query the database, we need to set up a way for our data to be retrieved,
+or fetched, from the cursor.
+I'm going to assign this to a variable of 'results' since it'll fetch any result that gets queried.
+Please note, if we need to query multiple records from our database, we should use the
+.fetchall() method.
+Otherwise, if we're intentionally looking for one particular record, we could use the
+.fetchone() method, which I will comment-out for now using the CTRL+/ command.
+Next, once our results have been fetched, we need to end the connection to the database,
+so the connection isn't always persistent.
+As previously mentioned, our data sits within a cursor object, similar to an array, so in
+order to retrieve each record individually, we need to iterate over the results using a for-loop.
+For each individual result in the results list, print the result.
+Now that we have our Python file setup, we can start to query the Chinook database to retrieve data.
+You don't need to mirror this next step, but what I am going to do is split my Terminal
+into two separate terminals, just so we can compare the results.
+On one side, I'm going to connect once again to the Postgres CLI, so that we can demonstrate
+those same raw SQL commands from the previous lesson.
+On the other side, all we need to do is simply run the Python file, which is the only method
+that you need to actually perform on your Terminal.
+After our cursor variable is defined, but before our results are fetched, we need to
+perform our queries using the .execute() method.
+Query #1 that we tested in the last video, was to simply select all records from the "Artist" table.
+PsycoPG2 commands are actually quite similar to native SQL commands, with one little twist;
+the precise use of quotations.
+It's extremely important to note that we absolutely must use single-quotes to wrap our query,
+and double-quotes to specify particular values.
+Let's save the file using CTRL+S, making sure the white dot on the tab disappears, and then
+we can run it using the command "python3 sql-psycopg2.py".
+That's wonderful, our Python file has connected successfully to the Chinook Postgres database,
+and our cursor object of results is being unpacked within our loop.
+Just for demonstration purposes, I'm going to swap the single and double quotes, then
+run the file once again, and you can see that we're getting a SyntaxError.
+Once I revert back to the correct quotes, you can see that the data matches exactly
+on the left using the CLI.
+We've got the ArtistId column of primary keys, as well as the Name column of each artist.
+Moving onto Query #2, let's comment-out the first query to avoid duplicates going forward.
+Query #2 was simply retrieving only the 'Name' column from the Artist table.
+Again, remember that our query needs to be wrapped in single-quotes, with each specific value in double-quotes.
+Let's save the file, then run it in the Terminal by hitting the Up arrow key to replay our
+last command, which has the desired results printed.
+Moving right along to Query #3, we're searching for only "Queen" from the Artist table.
+Since we need to specify a particular record, unfortunately any combination of single or
+double quotes just won't work.
+We need to use a Python string placeholder, and then define the desired string within a list.
+You can technically have multiple placeholders, depending on how detailed your query needs
+to be, and each placeholder would be added to this list.
+Technically, since we know there should only be one result, we could use the .fetchone() method.
+This would print each column individually, instead of part of a tuple of column results.
+Save the file and let's run the same command to print our results.
+Perfect, we have only one record returned specifically, for queen.
+Query #4, if you recall, is quite similar, but this time we'll specify the ArtistId of 51,
+instead of Queen's name.
+Again, we'll use a Python placeholder and list to specify that we need only the primary key of 51.
+Save the file, then start the app in the Terminal, and as you can see, we've got the same exact
+results as our previous query.
+For Query #5, again it's similar, but this time we're using the ArtistId from the Album table, not from Artist.
+You know the drill by now, save the file, and run the app in the Terminal.
+Wonderful, the three albums by Queen have been printed here properly.
+Finally, for Query #6, we will look on the Track table, for all tracks where the composer is Queen.
+Save the file one last time, and run the app.
+Brilliant, each track is printed as expected, matching that of our raw SQL results on the left.
+As a quick challenge, using the knowledge you’ve just learned from these few commands,
+I want you to test yourself and attempt to query the database for another artist or composer
+that you’ve seen from the entire list.
+Then, try to do the same thing, but for a composer that is not listed in the database,
+using something like “Test” as the composer name, since this will allow you to see what
+the output is when zero results are found.
+Using this psycopg2 data adapter, we were able to perform the same queries from the
+last lesson, but in a more Pythonic way.
+However, as you may have noticed, things can get quite messy and confusing, if not properly
+using the correct quotations on your queries.
+What if I told you that there's yet an even more Pythonic way to simplify your query searches?
+In the next lessons, we're going to learn how to make our queries more portable using
+something called an ORM, which I'll explain further on the next video.
+This lesson was simply just to introduce you to the most popular data adapter, linking Postgres to Python.
+
+
+-------------------------------------------------------------------Introducing an ORM
+In the previous lesson, we learned about psycopg2, the most popular library when connecting Python
+to Postgres. I also mentioned that there's an even more
+Pythonic method when working with Postgres, using something called an ORM.
+For this video, we will talk about what ORM stands for, what it does, and start the installation
+process to prepare for the next few lessons.
+The letters ORM stand for "object-relational mapping".
+An ORM is essentially a way for you to query and manipulate data from your database, using
+objects. By now, you're familiar with the use of objects
+in both JavaScript and Python. It means that you can work with a database
+using the language of your choice, such as Python, instead of having to use raw SQL commands.
+But what does that mean exactly? Let's break it down using each letter, to
+understand exactly how these tie-in together. O - Object; exactly as it sounds, the 'object'
+that you're using from the programming language, which is Python in our case.
+R - Relational; this is the database piece of the puzzle, a relational database, which
+is Postgres in our case. M - Mapping; finally, this is effectively
+the bridge between your Python object, and your tables within the database, mapping the
+two together.
+The most popular ORM libraries when working with Python are the Django ORM, and SQLAlchemy,
+both of which work well with Postgres. Django includes its own ORM, which is extremely
+popular, but cannot be decoupled from the Django framework to be used on its own.
+SQLAlchemy is built to be framework-agnostic, and so can therefore be used on its own.
+You don't need to worry about Django at this stage, because you will learn how to use Django
+at a later module on the course. For now, we're interested in learning about
+SQLAlchemy.
+Some of the best reasons to use SQLAlchemy include having cleaner code, the logic is
+simple, and your code is more secure than using raw SQL commands.
+In fact, the SQLAlchemy library comes with three different layers of abstraction, meaning
+you can choose the level of support necessary for your applications.
+The lowest layer of abstraction is to simply use SQLAlchemy's engine component in order
+to execute raw SQL, nothing too complex or fancy.
+The middle layer of abstraction uses SQLAlchemy's Expression Language to build SQL statements
+in a more Pythonic way, instead of relying purely on those raw strings.
+The highest layer of abstraction uses SQLAlchemy's full ORM capabilities, allowing us to make
+use of Python classes and objects, instead of using database tables and connections.
+With each level of abstraction, you, as a user, are moved further away from writing
+raw SQL, and using more Python.
+Due to the fact that we've already learned how to perform basic SQL commands, and we've
+seen how to perform the same queries using psycopg2, we will not be demonstrating the
+lowest level of SQLAlchemy. In the next lesson, we will learn how to work
+with the Expression Language, SQLAlchemy's middle layer of abstraction.
+After that, we'll dive into using the full ORM, and look at how to perform more CRUD
+functionality to manipulate our database.
+Before we move on, let's quickly setup our workspace and install the SQLAlchemy package
+for Python. pip3 install SQLAlchemy
+Now that we have that installed, I will see you on the next lesson where will learn about
+the Expression Language.
+
+------------------------------------------------Running basic queries
+SQLAlchemy's middle abstraction layer, the Expression Language.
+Simplifies queries to the database using tables.
+Connect Python and the SQLAlchemy library to the database, using cleaner code.
+
+In the previous lesson, we had a brief introduction to ORM libraries, including SQLAlchemy, and
+installed the package on our workspace.
+For this lesson, we will focus on the middle layer of SQLAlchemy's abstraction layers,
+which is the Expression Language.
+This is a huge step-up from regular SQL commands, and uses more Python logic to query and manipulate
+data from our database.
+One of the most important differences here is that there is less concern about punctuation,
+meaning you don't have to worry as much about the single vs double quotes.
+Also, we get to use more Python methods, which are quite similar to functions, but associated
+with classes and objects.
+Let's get started by creating a new file using the "touch" command called sql-expression.py in the Terminal.
+After opening our new file, the first thing we need to do is to import a few classes from
+within the sqlalchemy module. from sqlalchemy import (create_engine, Table,
+Column, Float, ForeignKey, Integer, String, MetaData)
+Next, we need to link our Python file to our Chinook database, and that's where the 'create_engine'
+component comes into play.
+I'm going to assign this to a variable of "db" to represent our database, and using
+create_engine, we can tell it to point to our local Chinook database within our Postgres server.
+The fact that we have 3 slashes here, signifies that our database is hosted locally within
+our workspace environment.
+After our engine is created, and connected to our database, we need to use the MetaData
+class, which we can save to a variable name of 'meta'.
+The MetaData class will contain a collection of our table objects, and the associated data
+within those objects.
+Essentially, it's recursive data about data, meaning the data about our tables, and the
+data about the data in those tables; how very meta!
+Now, we need to actually connect to the database, using the .connect() method, and the Python with-statement.
+This saves our connection to the database into a variable called 'connection'.
+Before we start to query the database, we need to construct our tables, so that Python
+knows the schema that we're working with.
+Sometimes you'll hear this referred to as data models, which we'll cover a bit more
+in detail later on the lessons.
+For the purposes of this video, we will continue with tradition, and perform the same six queries
+from Chinook that we've done previously.
+Our first table class, or model, will be for the Artist table, which I'll assign to the variable of 'artist_table'.
+Using the Table import, we need to specify the name of our table, and provide the meta schema.
+Now, all that's left to do is provide a breakdown of each of the columns within this table.
+Similar to our psycopg2 lessons, I'm going to split my Terminal into two once more, but
+you're not required to do this part.
+The reason for this is to demonstrate the raw SQL commands once again, and compare to
+our SQLAlchemy Expression Language file we're currently building.
+The quickest way to see the list of column headers on a table, is by simply returning
+false, which intentionally gives us zero results.
+As you can see, from the Artist table, we have two columns; "ArtistId", which you might
+recall as being our primary key, and "Name".
+Back within our file, the format when defining columns, is the column name, followed by the
+type of data presented, and then any other optional fields after that.
+In our case, we have a column for "ArtistId", which is an Integer, and for this one, we
+can specify that primary_key is set to True.
+The next column is for "Name", and this is simply just a String, with no other values necessary.
+In order to perform all six original queries that we've been using so far, we also need
+to create variables for the Album and Track tables.
+album_table = Table, and the name of the actual table from our database is "Album".
+I'll quickly return false for that table, in order to view the column headers, which
+are AlbumId, Title, and ArtistId.
+AlbumId is an Integer, and is, of course, our primary key.
+Title is just a String.
+Then, we have ArtistId as an Integer, but this time, since this is the Album table,
+it will not act as our primary key, but instead, as a Foreign Key.
+With the ForeignKey, we need to tell it which table and key to point to, so in this case,
+it's artist_table.ArtistId, using the table defined above.
+Our final table is the Track table, so let me quickly return false to view those column headers.
+As you can see, we have multiple columns.
+This table will be track_table as our variable, using "Track" for the table name.
+TrackId, an Integer, which is our primary key.
+Name, which is a String.
+AlbumId, an Integer, which is our ForeignKey pointing to the album_table.AlbumId from above.
+MediaTypeId, an Integer, which is technically a foreign key as well, but for these lessons,
+we aren't defining all tables, just those that we need, so we can simply set primary_key to False.
+GenreId, an Integer, and again, technically it's a foreign key, but we'll just set it
+to False as the primary key.
+Composer, which is a String.
+Milliseconds, an Integer.
+Bytes, another Integer.
+And finally, UnitPrice, which is a Float, since it uses decimal values for the price.
+Wonderful, now that we have all three of our tables defined as variables, we can start
+to query the database.
+Let's go back to our database connection, and within the "with-statement", we'll start
+with the first query.
+Again, I'm going to do the raw SQL commands on the left, and run our file on the right,
+but you only need to worry about running the file.
+Query #1 if you recall, is to select all records from the Artist table.
+For the sake of ease, let's define all six queries into a variable called 'select_query',
+which we can comment-out after each time it's used.
+Using the Expression Language, all we need to do is apply the .select() method onto our table.
+Now all that's left to do, is run this query using the .execute() method from our database connection.
+We're going to store the query results into a variable called "results", that way we can
+iterate over each result found, and print it to the Terminal.
+For each result in our results list, print the result.
+Save the file, and start it from your Terminal by typing "python3 sql-expression.py".
+Excellent, all of the data from the Artist table is printing as expected, which also
+means that our connection to the Chinook database from Python is working just fine!
+Although the initial setup might've taken a bit longer, by defining each table, you
+can see that the execution of the query is actually quite simple.
+Let's move on to query #2, where we select only the "Name" column from our Artist table.
+Remember to comment-out the previous query each time, since we're re-using the variable
+'select_query' for consistency.
+It's going to be exactly the same, but this time we can use the .with_only_columns() method.
+Even if we want to grab results from a single column, we need to wrap the column selection inside of a list.
+Also, using dot-nation, we need to use ".c" in our selection, which will identify a specific
+column header on the table.
+Save the file, and start the app again using the Up-arrow key to replay the last command.
+Nice, our results contain only the 'Name' column, just as we'd expect.
+For query #3, we want to find just the Artist name of "Queen".
+Again, we're selecting from the artist_table, but this time we need to use the .where()
+method, and from the Name column, looking for only "Queen".
+After saving the file, run the app again in the terminal, and as you can see, only Queen
+is being printed.
+Moving on to query #4, it's quite similar, but this time we just want the ArtistId of 51.
+Save the file, then start the application in your terminal, and you can see that's printed perfectly.
+For query #5, again, it's quite similar, but this time we're looking within the album_table.
+After saving the file, run the app, and sure enough, the 3 albums from Queen are listed here.
+Finally, for query #6, let's see if you can figure this one out on your own.
+I will display the raw SQL results on the left here, but pause the video, and try to
+give that a quick test on your own from within the Python file.
+How did you get on?
+Did you manage to retrieve those same exact 9 tracks using SQLAlchemy?
+If not, don't worry, I'll demonstrate that now.
+For this one, we wanted to look on the track table, and only find results from the Composer
+column that are from Queen.
+Well done!
+So far, we've learned how to execute the same six queries using raw SQL commands, then using
+the popular psycopg2 library, and in this lesson, using the SQLAlchemy Expression Language.
+But we can still take it one step further, and finally introduce the ORM.
+That's exactly what we'll do in the next video, performing these six queries one last time,
+but using SQLAlchemy's full Object-Relational Mapper.
+
+-------------------------------------------Introducing class-based models
+WHAT IS IT?
+
+SQLAlchemy's highest abstraction layer, the ORM.
+Simplifies queries to the database using class-based objects.
+Connect Python and the SQLAlchemy library to the database, using cleaner code.
+
+In the previous lesson, we learned how to query the database using SQLAlchemy's Expression
+Language, using the same six queries we've seen for each video so far.
+In this video, we'll be learning more about class-based models, so that we can fully use
+the ORM that comes with SQLAlchemy. Again, we're going to perform those same six
+queries, but by using the ORM and class-based models, we've reached the most Pythonic method,
+and the highest level of abstraction. Before we start to work with our data, let's
+discuss and understand what class-based models are, and how they work.
+A class is a collection of methods that serve a common purpose.
+Methods themselves should only do one thing, having only one purpose.
+If it starts to do too much, then you should ideally split it into different methods.
+For example, some of the methods we used on the last lesson include .connect() for connecting
+to the database, .select() for making a selection from the database, and .execute() to perform
+the execution of our query. As you can see, each one of these methods
+have a specific duty, only to do exactly what their name entails, nothing more.
+This is just one of the many benefits of using class-based models, as it helps to keep your
+code clean and modular, so you can re-use methods throughout an application without
+repeating yourself. The SQLAlchemy ORM comes with plenty of methods
+that we'll continue to use throughout the next several lessons.
+Now that you've got a better understanding of class-based models, let's start to query
+the database using this new knowledge, with the ORM.
+First, we'll start by creating a new file with the 'touch' command, and call it 'sql-orm.py'.
+We need to still import a few items at the top, but this time, we can ignore Table and
+MetaData. We also need to import something called the
+declarative_base from the sqlalchemy declarative extension.
+Finally, we need to import the sessionmaker class from the ORM.
+The reason that we no longer need to import the Table class, is because with the ORM,
+we're not going to create tables, but instead, we'll be creating Python classes.
+These Python classes that we'll create will subclass the declarative_base, meaning that
+any class we're making will extend from the main class within the ORM.
+It's the same exact thing for the sessionmaker; instead of making a connection to the database
+directly, we'll be asking for a session, which I'll discuss more in a moment.
+Exactly in the same way we did on the previous video, we're going to create a new variable
+of 'db', and use create_engine to point to our specific database location.
+This tells the application that we're using the Postgres server, on a local host since
+there are 3 slashes, in order to connect to our Chinook database.
+Next, we need a variable called 'base', which will be set to the declarative_base() class.
+This new 'base' class will essentially grab the metadata that is produced by our database
+table schema, and creates a subclass to map everything back to us here within the 'base' variable.
+In other words, we're piggybacking off of
+an existing ORM class, letting it do all of the dirty work, and we're reaping the benefits
+from it behind the scenes.
+Then, let's create a new variable of 'Session', making sure to use a capital 'S' here.
+This Session variable will instantiate the sessionmaker() class from the ORM, making
+a new instance of the sessionmaker, and point to our 'db' engine variable in order to use
+the database. There are some additional complexities that
+we won't get into here, but in order to connect to the database, we have to call Session()
+and open an actual session. To do that, we need another variable called
+'session', but this time using a lowercase 's', and we set that to equal the new instance
+of the Session() from above.
+Both of these concepts, using the declarative_base and sessionmaker, are using the highest layer
+of abstraction versus how we did this with the Expression Language.
+This is bringing us further away from writing raw SQL commands, and allowing us to use more
+Python logic, without having to focus too much on database tables directly.
+The last thing we need to do before we can work with our database, is to actually create
+the database subclass and generate all metadata. The base variable, given that it's a subclass
+from the declarative_base, will now use the .create_all() method from our database metadata.
+Now that we have the file set up, we can start to build our class-based models.
+These will be quite similar to how we did them in the last lesson, but this time, we
+get to simply build a normal Python object, that subclasses 'base'.
+Since we're going to perform the same six queries, we're going to work with the same
+three tables on Chinook, which were Artist, Album, and Track.
+Make sure these are added before the Session is created, but after the base is declared,
+since we need to use the base subclass.
+We're going to call our first class 'Artist', and define the __tablename__, wrapped in two
+underscores, which will be set to "Artist" as a string.
+Just a quick note for best practice, when defining your classes in Python, it's best
+to use PascalCase, meaning the first letter of each word is capitalized, and not to use underscores.
+As you are well aware, the Artist table has two columns.
+ArtistId which uses the imported Column() class,
+and that's going to be set to an Integer, which will also act as our primary_key.
+Then we have Name, which is the second Column() defined simply as a String.
+The next class-based model we need is for the Album table.
+Again, it's using the base subclass, and this time our tablename will be set to "Album".
+This time we have three columns to define. AlbumId, which will of course be an Integer,
+and is the primary_key for this table. Title, which is simply just a String.
+And ArtistId, which is another Integer, but this time it's a ForeignKey for the Artist
+table, pointing to the ArtistId column.
+Then finally, our third class-based model is for the Track table.
+We'll call it Track, and use the base subclass once again, then give it a tablename of "Track".
+This table consists of 9 different columns, if you recall from our last lesson.
+TrackId, an Integer, will be the primary_key for this table.
+Name, which is a String. AlbumId, an Integer, which is the ForeignKey
+from our Album table, pointing to the AlbumId column.
+MediaTypeId and GenreId, both of which are Integers, but since we have no custom models
+for them on this demo, we'll set those to false as the primary_key.
+Composer, another String. Milliseconds and Bytes, both are Integers
+again, and both will have the primary_key set to false.
+Then finally, UnitPrice, which is a Float. Sometimes you might confuse Float with Decimal,
+but if you're ever in doubt, just be sure to check on the SQLAlchemy documentation under
+the section called "Column and Data Types".
+Our code is slightly longer once again in terms of number of lines, but it's starting
+to feel more Pythonic. Basically, our code is easier to read, and
+allows us to ignore concepts such as tables, and focusing more on actual Python classes and objects.
+The good news is that our file is structured
+properly now, and we can start to actually query the database!
+Once again, for the final time, I will be splitting my Terminal, but you don't need
+to do this part. This will allow us to compare the raw SQL
+commands on the left, with the file being run on the right, which is the only thing
+you need to perform on your side.
+For query #1, if you recall, we're simply just selecting everything from the Artist table.
+At the bottom of our file, let's create a
+new variable called 'artists', and using our existing 'session' instance, we need to use
+the .query() method to query the Artist class. That should simply select everything on the
+table within the Artist class we defined above. We then need to iterate over the results found,
+and print each of the columns using dot-notation on our for-loop.
+I'm also going to separate each item using the Python separator, and have them split
+using the vertical-bar, or pipe, with a space on either side.
+Save the file, and let's run the app in our Terminal using "python3 sql-orm.py".
+Perfect, you can see that our results have been printed here, and the two columns are
+separated with the pipes and spaces.
+Moving on to query #2, we need to select only the 'Name' column from the Artist table.
+Let's comment-out the first query, since we'll re-use some of the variables below.
+Technically we don't need to, all we need to do is simply make a new print-statement,
+but this is just to keep a nice separation between each query.
+This one is exactly the same as the first one, but this time we only need to print the
+artist.Name here. Save the file, and then run it in the Terminal
+using the Up-arrow key to replay the last command.
+Again, that's working perfectly, and as you can see, only the artist names are being printed.
+Next up, query #3, we only want to find "Queen" from the Artist table.
+Since we know that we only want to find a single artist, the new variable will be 'artist', singular.
+This time, we can use the .filter_by() method,
+and using the Name column, we'll specify "Queen". Also, since it should technically only return
+one record, we can use the .first() method to only give us the first item from the query,
+just in case more than one result comes back. We're going print each column this time, so
+artist.ArtistId, artist.Name, and once again I'll separate these columns using the Python separator.
+Save the file, restart the app, and as you
+can see, that's working perfectly, we have Queen with their ID of 51.
+For query #4, it's exactly the same, but this time we want to filter by the ArtistId for
+Queen, which is 51. Just copy the entire query #3, and change
+the filter from Name, to ArtistId. Save the file, then restart the app in your terminal.
+Excellent, we're getting the same exact results,
+but having filtered by the ID instead of the Name.
+On query #5, we need to move over to the Album table this time, and look for any album where
+the ArtistId is 51 for Queen. This time we'll set a new variable of 'albums'
+since there are multiple albums, and use the Album class above, to filter only by the foreign
+key of ArtistId. Let's print each result, for each album in
+the albums list. We'll print all three columns, the AlbumId,
+the Title, and the ArtistId, using the Python separator once again.
+Save the file, and start the app. Wonderful, the three albums by Queen are printing just as we'd expect them to.
+For the final query #6, let's put your new knowledge to the test, and see if you can
+do this next one on your own. This time, we're going to look at the Track
+class from above, and we need to filter by the composer of Queen.
+Remember, the Track table on Chinook doesn't use a foreign_key for composers, but instead,
+simply just the name of the composer. Pause the video here, and see if you can manage this one by yourself.
+So how did you do? Did you manage to get the 9 tracks from Queen to print on your Terminal?
+If not, don't worry, let's go through and explain this one.
+I've created a new variable called 'tracks' since there are more than one track to find.
+We know that we need to query the Track class from our session, and that we need to filter
+by the Composer column, using "Queen" as the filter.
+Then, I've printed out each column individually, making sure it's PEP8 compliant.
+All column headers are included, separated using the vertical pipe again.
+After saving the file and running the app in the Terminal, you can see all nine of the
+tracks by Queen are displayed, and each column is separated appropriately.
+Well done if you managed to get that on your own!
+By now, you've successfully queried the Chinook database using four different methods.
+At first, we saw how to use raw SQL commands within the CLI.
+Then, we introduced a helpful Python library called PsycoPG2, to use Python instead of
+the command-line. After that, we were introduced to SQLAlchemy,
+where we used a Core component, the Expression Language, which focused on Tables.
+Finally, we've seen how to use the full ORM within SQLAlchemy based around class-based
+models, instead of actual Tables.
+Using this new knowledge, in the next two lessons, we are going to look at how to perform
+full CRUD functionality using the ORM. We'll start with the C in CRUD, which will
+be to create new data on a database. Then, we'll practice more queries from the
+database, which is the R in CRUD for reading data.
+After that, we'll focus on the U in CRUD for updating our data.
+Finally, the last piece of the puzzle in CRUD functionality is D, which, as you've probably
+guessed, means to delete data from our database.
+
+____________________________________________________________________________________________C.R.U.D FUNCTIONALITY
+------------------------Create and read
+Building class-based models to Create and Read data on your Postgres Database.
+Allows us to define custom tables to add and retrieve records using the ORM.
+Extending the ORM declarative_base to generate new tables and records.
+
+Over the last few lessons, we've learned a few different ways to retrieve data from our
+Chinook database. We've gone from raw SQL entries, and then
+moved up the ladder to more Pythonic methods with the use of SQLAlchemy and the ORM.
+Now, we're going to dive a bit deeper into using the ORM, and start working with full
+CRUD functionality. In this lesson, we will focus on 'CR', creating
+and reading, followed by 'UD', updating and deleting on our next lesson.
+For now, let's start by learning how to create new models and records within our database.
+These two CRUD lessons will be part of the same project and workspace as the previous lessons,
+so we're going to create a new file. touch sql-crud.py
+We will also be using the ORM method for these lessons, so let's copy the initial setup from
+the previous sql-orm file. This will include everything except for the
+class-based models, and the queries at the bottom.
+This time, however, we don't need to worry about importing Float or ForeignKey.
+If you wanted to build new records on any of the existing tables, you certainly can,
+but for this lesson, we will focus on building a brand new table.
+Our new table will be to celebrate and acknowledge some of the greatest programmers of all time,
+so we'll call this class-based model "Programmer". We will, of course, extend the declarative_base
+once again, and for our __tablename__ it'll match the class itself, "Programmer".
+For this table, we're going to keep it simple, and only include a few basic details.
+Our primary_key will be 'id', an Integer column, and since it's the primary key, it'll auto-increment
+with each new record added. This means that the first item added on this
+table will be assigned the ID of 1, and the second will be assigned the ID of 2, and so on.
+The remaining 5 columns will all be Strings,
+just to keep things simple. Those columns are: 'first_name', 'last_name',
+'gender', 'nationality', and finally 'famous_for'.
+Now that our table schema is decided, we can start to add new records onto this table.
+For each new record we add, we'll assign it to a variable using the programmer's name
+as the actual variable. I think it's fair to say, the first person
+that we should add here would definitely be Ada Lovelace, the first computer programmer ever.
+We will define the variable as 'ada_lovelace',
+and this will use the Programmer() object above to define the various key/value pairs.
+Instead of using her actual name, we'll just stick to the first name of Ada, and last name
+of Lovelace, since that's how we all know her.
+For nationality, she was from London, so we'll use "British", and she's most famous for being the first programmer.
+Now, all that's left to do, is to add her to the table by using our current session,
+and then commit that session. session.add(ada_lovelace) and session.commit()
+The lovely thing about using the ORM and sessions, is that the formatting for adding records
+is quite similar to using Git when pushing files to GitHub.
+For example, add this file, and then commit it, in the exact same way we added Ada to
+the session, and then committed that session.
+Before we start to add more Programmers to our table, let's make sure that Ada is added correctly.
+This is where the 'R' in CRUD comes back into
+action, as you've seen in our previous lessons, so this part should be familiar to you by now.
+We'll create a new variable to find all 'programmers',
+and then use the session to query our Programmer table.
+Then, even though we know there should only be one programmer, we will create a for-loop
+over this list of programmers, which will also prepare us for having more added later.
+We can print each key for the programmer, and use the Python separator of a vertical
+bar or pipe. This will be done using dot-notation, so programmer.id,
+programmer.first_name, and I’ll combine the first and last name using a space to separate
+them, then programmer.gender, programmer.nationality, and finally, programmer.famous_for.
+After we save the file, let's go ahead and start it within the terminal by typing "python3 sql-crud.py".
+Excellent, you can see that Ada's record is
+printing just fine. For comparison purposes, I'm just going to
+check our actual Chinook database from the Postgres CLI, but you don't need to perform
+this action. That's perfect, our Chinook database has the
+Programmer table, and Ada was successfully added into the table as expected.
+Let's move on, and start adding a few more famous programmers into our table.
+Next on our list, is of course the father of modern computing, "Alan Turing".
+He was also "British", and under the key of famous_for, we'll use "Modern Computing".
+Before we start to add and commit Alan to the database, we need to comment-out the session
+for Ada, otherwise this will create a second record for her.
+We're not going to commit this session just yet, so let's move on to adding a few more programmers.
+Next up, another famous female programmer, Grace Hopper.
+Grace was the inventor of a code compiler, which led to the invention of the COBOL programming language.
+Her nationality was "American".
+Our next Programmer is another female, Margaret Hamilton, who invented Software Engineering.
+She was also American. Margaret's work with software engineering
+is actually what saved the Apollo 11 crew when landing on the moon back in 1969.
+I'm pretty sure that everybody will recognize the next Programmer, Bill Gates, as one of
+the founders of Microsoft. He is also American.
+Our final Programmer is Tim Berners-Lee, the guy who invented the World Wide Web; or the Internet.
+Without his work, you probably wouldn't be sitting here watching this video and learning
+how to program through Code Institute! His nationality is British.
+Now that we have three famous women, and three famous men for our Programmer table, we can
+go ahead and commit these to our database.
+Since we've already created the for-loop to query the database, all we simply need to
+do next, is to run the file within our Terminal. python3 sql-crud.py
+Brilliant, as you can see, each one of our Programmers are now properly being printed,
+and if you notice, our primary_key has auto-incremented each one of their IDs by one.
+On the other side, I'll replay the last command in the Postgres CLI just to confirm these
+are now properly showing within our database. Wonderful, everything is behaving exactly
+as we'd expect, and all six programmers have been added to the Programmer table on our Chinook database.
+This concludes the first half of performing CRUD functionality using the ORM, and we've
+seen how to Create and Read records with our database.
+As a challenge, however, your goal now is to create one more record on this Programmer table.
+This record should be for yourself, since
+you've come this far in your programming career so far, and should definitely be celebrated!
+Test yourself and practice some more with the commands you've learned on this lesson,
+but just remember to comment-out the previous sessions so as not to duplicate them.
+Once you've successfully added your own record, I'll see you on the next lesson where we will
+use this information to learn the final steps in CRUD.
+We are going to learn how to update your records, as well as how to delete records from the database.
+
+-------------------------------------------------------------------Update and delete
+Using class-based models to Update and Delete data on your Postgres Database.
+Allows us to retrieve records in order to make necessary updates, or entirely delete them from the database.
+Securely accessing our database to properly manipulate data, or to delete data.
+
+By now, you should be quite familiar with using the SQLAlchemy ORM in order to perform
+half of the CRUD functionalities. You've learned how to both create records,
+as well as how to retrieve records. In the previous lesson, I also challenged
+you to create a new record on your own, specifically for yourself.
+We will be using your record in this lesson to learn the final pieces of CRUD, which are
+updating and deleting records from the database. If you haven't done that yet, pause this video
+and make sure to do that now. As you can see, I've already created a new
+record for myself, so this is the record I will be working with for this lesson.
+In order to update a specific record, we need to first identify which record that needs
+to be updated. Let's create a new variable of "programmer",
+and set that to our normal session.query() on the Programmer table.
+This time, however, we need to include the .filter_by() method.
+In some cases, your records might actually have very similar data, such as the same first
+or last name. As you can see, I share the same first name
+as Tim Berners-Lee, so filtering by first name is not practical.
+Ideally, we always want to try to use something unique with data retrieval, and that's precisely
+where our primary_key is most helpful on a relational database.
+If you've been following along exactly on the previous lesson, then your own record
+should have the primary_key of number 7. Since we only want one specific record, it's
+important to be sure to add the .first() method at the end of our query.
+If you don't add the .first() method, then you'll have to use a for-loop to iterate over
+the query list, even though it'll only find a single record using that ID.
+Once we've finished defining the query, we can simply use that 'programmer' variable
+and then define which columns need updating. In this case, let's go ahead and update our
+column of 'famous_for', and set that equal to "World President".
+After we finished the course with Code Institute, our programming skills skyrocketed, and our
+career took off, helping many people around the world.
+This is why all of the world's nations voted us to be their leader, and we became the World President.
+Then we need to commit this session. session.commit()
+Make sure to save the file, and then go ahead and run the application from your Terminal.
+python3 sql-crud.py
+Excellent, it's official now, the database doesn't lie, and now suddenly we're the World President, congratulations!
+Now that we've managed to update a single record, let's learn how to update multiple records.
+Before we do that, we need to comment-out
+the code, so it doesn't try to execute these updates each time we run the file.
+We're going to query all Programmers this time, and since we're already using the 'programmers'
+variable below within our results, let's define this variable as 'people'.
+This will be our standard query for all records on the Programmer table.
+Our goal here is to update everybody's record at the same time, so we need to iterate over
+each record using a for-loop. For each person in our list of people, if
+the person.gender is equal to 'F', then we want to update the gender to 'Female'.
+Otherwise, if the person.gender is equal to 'M', then we need to update the gender to 'Male'.
+After those are sorted, we need a closing
+else-statement, which we'll just print "Gender not defined".
+We also need to commit each update within this loop, and this doesn't need to be within
+any conditional check, it just needs to be part of the loop itself.
+Save your changes, and let's run the application in the Terminal again.
+python3 sql-crud.py
+That's great, you can see that each of the genders have been updated respectively.
+We've now successfully learned how to update either a single record, or multiple records.
+That's 'CRU' complete, and all that remains is 'D' for learning how to delete records
+from the database. In order to delete a particular record, we
+first need to identify which record to delete. Normally it's best to use something unique,
+such as the primary_key, in order to target a specific record for deletion.
+However, from a user perspective, we might not always know a record's ID, as that might
+be visible only to the developer. What we can do is use some Python input()
+fields, and prompt the user to find a specific person from our table.
+Since some records might have the same first or last name, let's ask for both names, and
+assign them to 'fname' and 'lname' respectively.
+Then, using the data found from those inputs, we can programmatically confirm deletion of
+this record. We need to query the Programmer table, and
+using the .filter_by() method, we can simply plug-in those two variables.
+Then, we need to think about defensive programming to double-check that it's the correct programmer
+being found. Let's confirm this by printing the first and
+last name, if the programmer variable is not None.
+Otherwise, if there are no results found, then we'll simply print "No records found".
+If there is a programmer found, then within the if-statement, we want to confirm if the
+user actually wants to delete this record permanently.
+This will be assigned to a new variable of "confirmation".
+All we care about is whether or not the response is 'y' for confirmation to delete it, so a
+simple check on the value using the .lower() method is all we need.
+If there is not a match to confirm deletion, then we can just print "Programmer not deleted".
+Save the file, and let's run the application in the terminal.
+We'll first test using a fake name that we know isn't in the database, such as John Doe.
+As you can see, "No records found" was printed. Let's hit the Up-arrow key to replay the last
+command, and run the file once again. This time, use your own name, but make sure
+to type anything other than the letter 'y', so we can test an invalid response.
+Wonderful, it hasn't deleted our record just yet, because we didn't confirm deletion, and
+we're still being printed with the list of all Programmers.
+Now, let's run the app one more time, but this time, type 'y' to confirm deletion of
+your record. Great, you can see that we've been removed
+from the database, and a message of "Programmer has been deleted" is displayed as well.
+Let's comment-out the entire deletion function for now, so it doesn't constantly prompt for inputs.
+This final part will not be done, so do not
+repeat this section, as it's purely for demonstration purposes only.
+If you simply just wanted to delete all records on this table, instead of just a single record,
+then it would look something like this.
+Fairly simple, we find all records from the Programmer table, and iterate over each one
+individually to delete and commit the record. Only perform this if you're absolutely certain
+you want to delete all records, and make sure, if using this in a real-world scenario, to
+use defensive programming to confirm deletion first.
+Well done for getting this far! Over the last several lessons, we've learned
+about relational databases, and various methods to query the database.
+We've also learned how to perform full CRUD functionality using the SQLAlchemy ORM, in
+order to create, read, update, and delete records.
+There are several methods to performing a lot of these queries, and filtering by very
+specific information, but this was just a basic introduction to working with a database.
+We would highly recommend reading the docs for SQLAlchemy, and to continue practicing
+a few more of these CRUD operations. Your challenge is to create a new table on
+the database, to practice updating and deleting records until you feel confident enough to
+move forward. Some example tables you could create include:
+Your favorite places, containing the country name, capital, population, etc.
+Or, your favorite games, including the year of release, the console name, etc.
+In the next section, we're going to start building an actual mini-project together.
+This will include the use of Flask again, as you've previously seen with the Thorin
+mini-project, but this time combining everything together using Flask and SQLAlchemy.
+In addition to this, we are going to use a different CSS framework instead of Bootstrap,
+called Materialize, built off of the design language created by Google called Material Design.
+I'll see you in the next section!
+
